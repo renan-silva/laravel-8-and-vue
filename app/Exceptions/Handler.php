@@ -38,4 +38,24 @@ class Handler extends ExceptionHandler
             //
         });
     }
+	
+	/**
+     * Changes the behavior of callbacks, for exceptions thrown in API routes.
+     *
+     */
+
+    public function render($request, Throwable $e)
+    {
+
+        if ($request->is('api/*')){
+            if ($e instanceof ValidationException) {
+                return response()->json(
+                    $e->errors(),
+                    $e->status
+                );
+            }
+        }
+
+        return parent::render($request, $e);
+    }
 }
